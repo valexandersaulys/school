@@ -62,7 +62,7 @@ while A:
 
     # Append everything to lists
     v_s.append([v_ix,v_iy,v_ix_r,v_iy_r]);
-    coordinates.append([c_x,c_y,c_nx,c_ny]);
+    coordinates.append([c_x,c_y,c_nx,c_ny]);  # this is flipped unfortuantely 
 
     # Check to see if conditions are over
     if nc_ny <= 0:
@@ -72,15 +72,17 @@ while A:
 
 # Then plot
 from ggplot import *
-coord_array = pd.DataFrame(coordinates,columns=['x_res','y_res','x_grav','y_grav']);
-p = ggplot(coord_array,aes()) \
-    + geom_point(aes(x='x_res',y='y_res',color='blue')) \
-    + geom_point(aes(x='x_grav',y='y_grav',color='green')) \
+first = [ [x[0],x[1],'Air Resistance'] for x in coordinates]
+second = [ [x[2],x[3],'Gravity Only'] for x in coordinates]
+coord_array = pd.DataFrame(first+second,
+                           columns=['x','y','type']);
+print coord_array
+p = ggplot(coord_array,aes(x='x',y='y',color='type')) \
+    + geom_point() \
     + xlim(0,100) + ylim(0,25) \
-    + labs(x="X",y="Y") \
-    + scale_color_manual("Legend",colors=['green','blue'],
-                          labels=['No Air Resistance','Air Resistance']);
-ggsave(plot=p,filename="test.png");
+    + scale_color_manual(['red','green']) \
+    + labs(x="X",y="Y") + ggtitle("Air Resistance vs. No Air Resistance");
+
 print p;
     
     
